@@ -1,0 +1,29 @@
+ConnectorTitle: GoogleAds
+AccessCodeServiceEndpoint: https://accounts.google.com/o/oauth2/v2/auth
+AccessTokenServiceEndpoint: https://accounts.google.com/o/oauth2/token
+UserName: hide
+UserPassword: hide
+ClientId: required
+ClientSecret: required
+AccessCodeServiceUrl: hide
+AccessTokenServiceUrl: hide
+Personalized: !!bool true
+ApiKey: hide
+ServiceUrl: hide
+ServiceUrlHint: ''
+XML2JSON: hide
+ImpersonateOAuth: required
+Interface: hide
+Custom1: required
+Custom1Label: Client customer ID e.g. '123-456-7890'
+Custom1Hint: '123-456-7890'
+Custom2: required
+Custom2Label: Developer Token
+Custom3: hide
+Custom2Hint: ''
+Custom3Label: Custom Field 3
+Custom3Hint: ''
+Scopes:
+- ScopeName: https://www.googleapis.com/auth/adwords
+  ScopeDescription: View and manage your Google Analytics data.
+  IsDefault: false
