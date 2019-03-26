@@ -4,8 +4,6 @@ const isPlainObj = require('is-plain-obj');
 const HttpAgent = require('agentkeepalive');
 const HttpsAgent = HttpAgent.HttpsAgent;
 
-let _activity = null;
-
 function api(path, opts) {
   if (typeof path !== 'string') {
     return Promise.reject(new TypeError(`Expected \`path\` to be a string, got ${typeof path}`));
@@ -13,7 +11,7 @@ function api(path, opts) {
 
   opts = Object.assign({
     json: false,
-    token: _activity.Context.connector.token,
+    token: Activity.Context.connector.token,
     endpoint: 'https://adwords.google.com',
     method: 'POST',
     agent: {
@@ -23,8 +21,8 @@ function api(path, opts) {
   }, opts);
 
   opts.headers = Object.assign({
-    'clientCustomerId': _activity.Context.connector.custom1,
-    'developerToken': _activity.Context.connector.custom2,
+    'clientCustomerId': Activity.Context.connector.custom1,
+    'developerToken': Activity.Context.connector.custom2,
     'Content-Type': 'application/x-www-form-urlencoded',
     'user-agent': 'adenin Now Assistant Connector, https://www.adenin.com/now-assistant'
   }, opts.headers);
@@ -63,10 +61,6 @@ api.stream = (url, opts) => apigot(url, Object.assign({}, opts, {
   json: false,
   stream: true
 }));
-
-api.initialize = function (activity) {
-  _activity = activity;
-};
 
 for (const x of helpers) {
   const method = x.toUpperCase();
