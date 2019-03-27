@@ -17,8 +17,8 @@ module.exports = async (activity) => {
 
     let campaignStatus = {
       title: T('Camapaigns Status'),
-      url: 'https://ads.google.com/aw/overview?',
-      urlLabel: T('All Campaigns'),
+      link: 'https://ads.google.com/aw/overview?',
+      linkLabel: T('All Campaigns'),
       description: T(`Yesterday you had {0} clicks and {1} impression with a total cost of {2}$.`, totalClicks, totalImpressions, totalCost / 1000000),
       color: 'blue',
       value: response.body.length,
