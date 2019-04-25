@@ -4,25 +4,7 @@ const got = require('got');
 const HttpAgent = require('agentkeepalive');
 const HttpsAgent = HttpAgent.HttpsAgent;
 
-const xmlDefinition = `
-<reportDefinition xmlns="https://adwords.google.com/api/adwords/cm/v201809">
-<selector>
-<fields>CampaignId</fields>
-<fields>Impressions</fields>
-<fields>Clicks</fields>
-<fields>Cost</fields>
-<predicates>
-  <field>AdGroupStatus</field>
-  <operator>IN</operator>
-  <values>ENABLED</values>
-  <values>PAUSED</values>
-</predicates>
-</selector>
-<reportName>Custom Adgroup Performance Report</reportName>
-<reportType>ADGROUP_PERFORMANCE_REPORT</reportType>
-<dateRangeType>YESTERDAY</dateRangeType>
-<downloadFormat>CSV</downloadFormat>
-</reportDefinition>`;
+let _activity = null;
 
 function api(path, opts) {
   if (typeof path !== 'string') {
@@ -31,9 +13,8 @@ function api(path, opts) {
 
   opts = Object.assign({
     json: false,
-    token: Activity.Context.connector.token,
+    token: _activity.Context.connector.token,
     endpoint: 'https://adwords.google.com',
-    method: 'POST',
     agent: {
       http: new HttpAgent(),
       https: new HttpsAgent()
@@ -41,19 +22,15 @@ function api(path, opts) {
   }, opts);
 
   opts.headers = Object.assign({
-    clientCustomerId: Activity.Context.connector.custom1,
-    developerToken: Activity.Context.connector.custom2,
+    clientCustomerId: _activity.Context.connector.custom1,
+    developerToken: _activity.Context.connector.custom2,
     'Content-Type': 'application/x-www-form-urlencoded',
-    'user-agent': 'adenin Now Assistant Connector, https://www.adenin.com/now-assistant'
+    'user-agent': 'adenin Digital Assistant Connector, https://www.adenin.com/digital-assistant'
   }, opts.headers);
 
   if (opts.token) opts.headers.Authorization = `Bearer ${opts.token}`;
 
-  opts.form = true;
-  opts.body = {
-    ...opts.body,
-    __rdxml: xmlDefinition
-  };
+ 
 
   const url = /^http(s)\:\/\/?/.test(path) && opts.endpoint ? path : opts.endpoint + path;
 
@@ -73,6 +50,10 @@ const helpers = [
   'delete'
 ];
 
+api.initialize = (activity) => {
+  _activity = activity;
+};
+
 api.stream = (url, opts) => got(url, Object.assign({}, opts, {
   json: false,
   stream: true
@@ -80,8 +61,8 @@ api.stream = (url, opts) => got(url, Object.assign({}, opts, {
 
 for (const x of helpers) {
   const method = x.toUpperCase();
-  api[x] = (url, opts) => api(url, Object.assign({}, opts, {method}));
-  api.stream[x] = (url, opts) => api.stream(url, Object.assign({}, opts, {method}));
+  api[x] = (url, opts) => api(url, Object.assign({}, opts, { method }));
+  api.stream[x] = (url, opts) => api.stream(url, Object.assign({}, opts, { method }));
 }
 
 module.exports = api;
